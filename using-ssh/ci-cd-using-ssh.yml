@@ -1,0 +1,26 @@
+name: Deploy Laravel Project via SSH
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy files via SSH & run composer update
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}  # (or use `key: ${{ secrets.SSH_KEY }}` for key-based auth)
+          script: |
+            # Sync files using rsync (faster than FTP)
+            rsync -avz --delete --exclude='.env' --exclude='storage/*' ./ ${{ secrets.SSH_DEPLOY_PATH }}/
+            
+            # Navigate to project directory and run composer
+            cd ${{ secrets.SSH_DEPLOY_PATH }}
+            composer update --no-interaction --no-dev --optimize-autoloader
