@@ -14,10 +14,10 @@ The following files/directories are excluded from deployment:
 ## Composer Flags
 - When installing dependencies in production:
 ```
-composer install --no-dev --optimize-autoloader
+composer update --no-interaction --no-dev --optimize-autoloader
 ```
 
-## Install rsync
+## Install rsync if it is not installed in your server
 - Ubuntu/Debian
 ```
 sudo apt update -y
